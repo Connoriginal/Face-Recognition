@@ -2,6 +2,7 @@ import os
 import numpy as np
 import pandas as pd
 from PIL import Image
+from torch.utils.data import random_split
 
 data_path = "./yalefaces"
 save_path = "./clean_yalefaces"
