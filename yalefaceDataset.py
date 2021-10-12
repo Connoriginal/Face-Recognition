@@ -4,14 +4,15 @@ from PIL import Image
 import torch
 from torch.utils.data import Dataset
 
-annotations_file = "./data/yaleface.csv"
-img_dir = "./data/clean_yalefaces/"
+
 
 class YalefaceDataset(Dataset):
-    def __init__(self,annotations_file,img_dir,transform=None,target_transform=None):
-        
-        self.img_labels = pd.read_csv(annotations_file)
-        self.img_dir = img_dir
+    def __init__(self,train = True, transform=None,target_transform=None):
+        if train :
+            self.img_labels = pd.read_csv("./data/yale_train.csv")
+        else :
+            self.img_labels = pd.read_csv("./data/yale_test.csv")
+        self.img_dir = "./data/clean_yalefaces/"
         self.transform = transform
         self.target_transform = target_transform
 
@@ -19,11 +20,14 @@ class YalefaceDataset(Dataset):
         return len(self.img_labels)
 
     def __getitem__(self, idx):
-        img_path = img_dir + '/' + self.img_labels.iloc[idx,0]
+        img_path =  os.path.join(self.img_dir, self.img_labels.iloc[idx, 0])
         image = Image.open(img_path)
-        label = float(self.img_labels.iloc[idx,1])
+        label = self.img_labels.iloc[idx,3]
         if self.transform :
             image = self.transform(image)
         if self.target_transform :
             label = self.target_transform(label)
-        return image,labels
+        
+        return image, label
+
+    # def get_label_dictionary() :
